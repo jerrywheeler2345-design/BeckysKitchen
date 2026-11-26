@@ -1,0 +1,26 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meal</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <!-- <nav class="navbar">
+        <div class="nav-brand">MealOrder Portal</div>
+        <div class="nav-links">
+            {% if session.get('user_id') %}
+            <span class="nav-user">
+                Hello, {{ session.get('username') }}
+            </span>
+
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+            {% endif %}
+        </div>
+    </nav>     -->
+    {% block content %} {% endblock %}
+  </body>
+</html>

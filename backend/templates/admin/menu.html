@@ -1,11 +1,339 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Menu</title>
-</head>
-<body>
-    <h1>Admin Menu</h1>
-    <a href="/logout">Logout</a>
-</body>
-</html>
+{% extends "base.html" %} {% block content %}
+
+<div class="admin-menu-page">
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <h2>Beckys<span>Kitchen.</span></h2>
+      <p>Admin Panel</p>
+    </div>
+
+    <nav class="admin-nav">
+      <a href="/admin/dashboard"> <span>🏠</span> Dashboard </a>
+
+      <a href="/admin/orders"> <span>📦</span> Orders </a>
+
+      <a href="/admin/menu" class="active"> <span>🍽️</span> Menu </a>
+
+      <a href="/admin/customers"> <span>👥</span> Customers </a>
+
+      <a href="/admin/settings"> <span>⚙️</span> Settings </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <a href="/logout" class="logout-link"> <span>↪</span> Logout </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-menu-main">
+    <!-- Top Header -->
+    <header class="admin-menu-header">
+      <div>
+        <h1>Menu Management</h1>
+        <p>Manage your meals, prices and availability.</p>
+      </div>
+
+      <div class="admin-profile">
+        <div class="admin-avatar">B</div>
+        <div>
+          <strong>Admin</strong>
+          <small>BeckysKitchen</small>
+        </div>
+      </div>
+    </header>
+
+    <!-- Statistics -->
+    <section class="menu-stats">
+      <div class="menu-stat-card">
+        <div class="stat-icon orange">🍽️</div>
+        <div>
+          <p>Total Menu Items</p>
+          <h2>{{ menu_items|length }}</h2>
+        </div>
+      </div>
+
+      <div class="menu-stat-card">
+        <div class="stat-icon green">✅</div>
+        <div>
+          <p>Available Items</p>
+          <h2>{{ menu_items|selectattr('is_available')|list|length }}</h2>
+        </div>
+      </div>
+
+      <div class="menu-stat-card">
+        <div class="stat-icon red">⛔</div>
+        <div>
+          <p>Unavailable Items</p>
+          <h2>{{ menu_items|rejectattr('is_available')|list|length }}</h2>
+        </div>
+      </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu-management-card">
+      <div class="menu-section-header">
+        <div>
+          <h2>Food Menu</h2>
+          <p>All meals currently listed in your store.</p>
+        </div>
+
+        <button class="add-menu-btn" onclick="openMenuModal()">
+          + Add New Meal
+        </button>
+      </div>
+
+      <!-- Search -->
+      <div class="menu-search-wrapper">
+        <input
+          type="text"
+          id="menuSearch"
+          placeholder="Search meals or categories..."
+        />
+        <span>🔍</span>
+      </div>
+
+      <!-- Table -->
+      <div class="menu-table-wrapper">
+        <table class="admin-menu-table">
+          <thead>
+            <tr>
+              <th>Meal</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+
+          <tbody id="menuTableBody">
+            {% for item in menu_items %}
+
+            <tr class="menu-row">
+              <td>
+                <div class="menu-food-info">
+                  {% if item.image %}
+                  <img
+                    src="{{ item.image }}"
+                    alt="{{ item.name }}"
+                    class="menu-food-image"
+                  />
+                  {% else %}
+                  <div class="menu-food-placeholder">🍲</div>
+                  {% endif %}
+
+                  <div>
+                    <strong>{{ item.name }}</strong>
+
+                    {% if item.description %}
+                    <small>{{ item.description }}</small>
+                    {% endif %}
+                  </div>
+                </div>
+              </td>
+
+              <td>
+                <span class="category-badge"> {{ item.category }} </span>
+              </td>
+
+              <td>
+                <strong class="menu-price">
+                  ₦{{ "{:,.2f}".format(item.price) }}
+                </strong>
+              </td>
+
+              <td>
+                {% if item.is_available %}
+                <span class="status-badge available"> Available </span>
+                {% else %}
+                <span class="status-badge unavailable"> Unavailable </span>
+                {% endif %}
+              </td>
+
+              <td>
+                <div class="menu-actions">
+                  <!-- Edit -->
+                  <a
+                    href="/admin/menu/edit/{{ item.id }}"
+                    class="edit-btn"
+                    title="Edit meal"
+                  >
+                    ✏️
+                  </a>
+
+                  <!-- Toggle Availability -->
+                  <form action="/admin/menu/toggle/{{ item.id }}" method="POST">
+                    <button
+                      type="submit"
+                      class="toggle-btn"
+                      title="Change availability"
+                    >
+                      {% if item.is_available %} 👁️ {% else %} 🚫 {% endif %}
+                    </button>
+                  </form>
+
+                  <!-- Delete -->
+                  <form
+                    action="/admin/menu/delete/{{ item.id }}"
+                    method="POST"
+                    onsubmit="
+                      return confirm(
+                        'Are you sure you want to delete this meal?',
+                      );
+                    "
+                  >
+                    <button
+                      type="submit"
+                      class="delete-btn"
+                      title="Delete meal"
+                    >
+                      🗑️
+                    </button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+
+            {% else %}
+
+            <tr>
+              <td colspan="5" class="empty-menu">
+                <div>
+                  <span>🍽️</span>
+                  <h3>Your menu is empty</h3>
+                  <p>Add your first meal to get started.</p>
+                </div>
+              </td>
+            </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Add Meal Modal -->
+<div class="menu-modal-overlay" id="menuModal">
+  <div class="menu-modal">
+    <div class="modal-header">
+      <div>
+        <h2>Add New Meal</h2>
+        <p>Enter the details of your new menu item.</p>
+      </div>
+
+      <button class="modal-close" onclick="closeMenuModal()">&times;</button>
+    </div>
+
+    <form action="/admin/menu/add" method="POST">
+      <div class="form-group">
+        <label>Meal Name</label>
+        <input
+          type="text"
+          name="name"
+          placeholder="e.g. Jollof Rice and Chicken"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Category</label>
+        <select name="category" required>
+          <option value="">Select Category</option>
+          <option value="Rice">Rice</option>
+          <option value="Swallow">Swallow</option>
+          <option value="Soup">Soup</option>
+          <option value="Grills">Grills</option>
+          <option value="Drinks">Drinks</option>
+          <option value="Snacks">Snacks</option>
+          <option value="Others">Others</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Price (₦)</label>
+        <input
+          type="number"
+          name="price"
+          placeholder="Enter price"
+          min="0"
+          step="0.01"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Image URL</label>
+        <input
+          type="text"
+          name="image"
+          placeholder="Paste image link (optional)"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea
+          name="description"
+          rows="3"
+          placeholder="Describe this meal..."
+        ></textarea>
+      </div>
+
+      <div class="form-group availability-check">
+        <label>
+          <input type="checkbox" name="is_available" value="1" checked />
+          Meal is available for orders
+        </label>
+      </div>
+
+      <div class="modal-buttons">
+        <button type="button" class="cancel-btn" onclick="closeMenuModal()">
+          Cancel
+        </button>
+
+        <button type="submit" class="save-menu-btn">Save Meal</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+  function openMenuModal() {
+    document.getElementById("menuModal").classList.add("show");
+  }
+
+  function closeMenuModal() {
+    document.getElementById("menuModal").classList.remove("show");
+  }
+
+  // Search menu items
+  document.getElementById("menuSearch").addEventListener("input", function () {
+    const searchValue = this.value.toLowerCase();
+
+    const rows = document.querySelectorAll(".menu-row");
+
+    rows.forEach(function (row) {
+      const rowText = row.innerText.toLowerCase();
+
+      if (rowText.includes(searchValue)) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  });
+
+  // Close modal when clicking outside
+  document
+    .getElementById("menuModal")
+    .addEventListener("click", function (event) {
+      if (event.target === this) {
+        closeMenuModal();
+      }
+    });
+</script>
+
+{% endblock %}

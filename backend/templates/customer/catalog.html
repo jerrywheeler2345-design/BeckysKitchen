@@ -1,11 +1,151 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Catalog</title>
-</head>
-<body>
-      <h1>Customer Catalog</h1>
-    <a href="/logout">Logout</a>
-</body>
-</html>
+{% extends "base.html" %} {% block content %}
+
+<nav class="navbar">
+  <div class="nav-brand">
+    <h2>BeckysKitchen<span>.</span></h2>
+  </div>
+
+  <div class="nav-links">
+    <a href="{{ url_for('catalog') }}" class="active">Home</a>
+    <a href="#">Our Menu</a>
+    <a href="#">My Orders</a>
+  </div>
+
+  <div class="nav-user">
+    <span>Hi, {{ session.get('username', 'Customer') }}</span>
+    <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="catalog-container">
+  <!-- Welcome Section -->
+  <section class="welcome-section">
+    <div class="welcome-text">
+      <span class="welcome-tag">WELCOME TO BECKYSKITCHEN</span>
+
+      <h1>Delicious meals,<br />made with love.</h1>
+
+      <p>
+        Discover delicious meals prepared with fresh ingredients. Your next
+        favourite meal is just a click away.
+      </p>
+
+      <a href="#featured" class="explore-btn"> Explore Our Menu </a>
+    </div>
+
+    <div class="welcome-image">
+      <img
+        src="https://images.unsplash.com/photo-1547592180-85f173990554?w=900"
+        alt="Delicious freshly prepared meal"
+      />
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="categories-section">
+    <div class="section-heading">
+      <div>
+        <span class="section-tag">EXPLORE</span>
+        <h2>Food Categories</h2>
+      </div>
+    </div>
+
+    <div class="category-grid">
+      <div class="category-card">
+        <span>🍚</span>
+        <h3>Rice Dishes</h3>
+      </div>
+
+      <div class="category-card">
+        <span>🍝</span>
+        <h3>Swallow & Soups</h3>
+      </div>
+
+      <div class="category-card">
+        <span>🍗</span>
+        <h3>Grills</h3>
+      </div>
+
+      <div class="category-card">
+        <span>🥤</span>
+        <h3>Drinks</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Meals -->
+  <section class="featured-section" id="featured">
+    <div class="section-heading">
+      <div>
+        <span class="section-tag">OUR SELECTION</span>
+        <h2>Featured Meals</h2>
+        <p>Explore some of our delicious offerings.</p>
+      </div>
+
+      <a href="#">View All →</a>
+    </div>
+
+    <div class="food-grid">
+      <div class="food-card">
+        <img
+          src="https://images.unsplash.com/photo-1603133872878-684f208fb84b?w=700"
+          alt="Jollof rice"
+        />
+
+        <div class="food-info">
+          <span class="food-category">RICE DISH</span>
+          <h3>Nigerian Jollof Rice</h3>
+          <p>Richly seasoned rice with authentic flavour.</p>
+          <div class="food-bottom">
+            <strong>Explore Meal</strong>
+            <span>→</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <img
+          src="https://images.unsplash.com/photo-1547592180-85f173990554?w=700"
+          alt="Healthy vegetable meal"
+        />
+
+        <div class="food-info">
+          <span class="food-category">SPECIAL MEAL</span>
+          <h3>Fresh Vegetable Dish</h3>
+          <p>Fresh ingredients prepared with care.</p>
+          <div class="food-bottom">
+            <strong>Explore Meal</strong>
+            <span>→</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-card">
+        <img
+          src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=700"
+          alt="Burger"
+        />
+
+        <div class="food-info">
+          <span class="food-category">FAST FOOD</span>
+          <h3>Classic Burger</h3>
+          <p>A delicious and satisfying meal.</p>
+          <div class="food-bottom">
+            <strong>Explore Meal</strong>
+            <span>→</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="catalog-footer">
+  <h3>BeckysKitchen.</h3>
+  <p>Freshness, Quality & Great Taste.</p>
+  <p>&copy; 2026 BeckysKitchen. All rights reserved.</p>
+</footer>
+
+{% endblock %}
